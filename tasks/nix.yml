@@ -1,0 +1,59 @@
+---
+# tasks file for makkus.workstation
+
+- name: nix-config file to allow unfree packages
+  copy: src=data/config.nix dest=/home/{{ ansible_env.USER }}/.nixpkgs/config.nix force=no
+  tags:
+    - workstation
+    - workstation:nix
+
+
+- name: install nix dependencies
+  apt: pkg={{item}} state=installed
+  with_items:
+    - wget
+    - bzip2
+    - ca-certificates
+  become: yes
+  tags:
+    - workstation
+    - workstation:nix
+
+- name: Install nix
+  command: data/install_nix.sh creates=/home/{{ ansible_env.USER }}/.nix-profile/bin/nix-env
+  become: no
+  tags:
+    - workstation
+    - workstation:nix
+
+- name: Install external nix packages
+  command: "{{ role_path }}/files/data/nix_external_packages.sh {{ data_external }}"
+  become: no
+  tags:
+    - workstation
+    - workstation:nix
+
+- name: install nix packages
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.nix-profile/bin:{{ ansible_env.PATH }}"
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  nix: name={{ item }} state=present
+  with_items:
+    - "{{ nix_packages }}"
+  become: no
+  tags:
+    - workstation
+    - workstation:nix
+
+- name: install nix x packages
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.nix-profile/bin:{{ ansible_env.PATH }}"
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  nix: name={{ item }} state=present
+  with_items:
+    - "{{ nix_x_packages }}"
+  become: no
+  when: not cli_only
+  tags:
+    - workstation
+    - workstation:nix

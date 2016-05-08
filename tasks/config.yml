@@ -1,0 +1,62 @@
+- name: "Checkout dotfiles"
+  git: repo=ssh://git@github.com/makkus/dotfiles
+       dest=~/dotfiles
+       accept_hostkey=True
+       executable=~/.nix-profile/bin/git
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+- name: "Unlock encrypted dotfiles"
+  shell: . ~/.nix-profile/etc/profile.d/nix.sh && ~/.nix-profile/bin/git-crypt unlock
+         chdir=~/dotfiles
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+
+- name: "Install spacemacs"
+  git: repo=git://github.com/syl20bnr/spacemacs
+       dest=~/.emacs.d
+       executable=~/.nix-profile/bin/git
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+
+- name: "Install zplug"
+  git: repo=git://github.com/b4b4r07/zplug
+       dest=~/.zplug
+       executable=~/.nix-profile/bin/git
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+
+- name: "Remove potential setup configs"
+  shell: rm -rf ~/.bash_profile ~/.bashrc ~/.profile ~/.nix-pkgs
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+
+- name: "Create config symlinks with stow"
+  shell: . ~/.nix-profile/etc/profile.d/nix.sh && stow {{ item }}
+         chdir=~/dotfiles
+  with_items:
+      - "{{ stow_packages  }}"
+  become: no
+  tags:
+    - workstation
+    - workstation:config
+
+- name: "Create config symlinks for x packages with stow"
+  shell: . ~/.nix-profile/etc/profile.d/nix.sh && stow {{ item }}
+         chdir=~/dotfiles
+  with_items:
+      - "{{ stow_x_packages  }}"
+  become: no
+  when: not cli_only
+  tags:
+    - workstation
+    - workstation:config

@@ -1,0 +1,71 @@
+---
+# python pip tasks file for makkus.workstation
+
+- name: install python dependencies
+  apt: pkg={{item}} state=installed
+  with_items:
+    - python-setuptools
+    - python3-setuptools
+    - python-dev
+    - python3-dev
+    - virtualenvwrapper
+  become: yes
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip
+  command: easy_install pip creates=/usr/local/bin/pip
+  become: yes
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip3
+  command: easy_install3 pip creates=/usr/local/bin/pip3
+  become: yes
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip packages
+  pip: name={{ item }} state=latest
+       executable=pip2
+  with_items:
+    - "{{ pip2_packages }}"
+  become: yes
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip x packages
+  pip: name={{ item }} state=latest
+       executable=pip2
+  with_items:
+    - "{{ pip2_x_packages }}"
+  become: yes
+  when: not cli_only
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip3 packages
+  pip: name={{ item }} state=latest
+       executable=pip3
+  with_items:
+    - "{{ pip3_packages }}"
+  become: yes
+  tags:
+    - workstation
+    - workstation:pip
+
+- name: install pip3 x packages
+  pip: name={{ item }} state=latest
+       executable=pip3
+  with_items:
+    - "{{ pip3_x_packages }}"
+  become: yes
+  when: not cli_only
+  tags:
+    - workstation
+    - workstation:pip

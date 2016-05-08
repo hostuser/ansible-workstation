@@ -1,0 +1,40 @@
+---
+# tasks file for makkus.workstation
+
+- name: "Generate ssh key"
+  command: ssh-keygen -N "{{ ssh_key_password }}" -f "~/.ssh/id_rsa" creates=~/.ssh/id_rsa
+  tags:
+    - workstation
+    - workstation:user
+  become: no
+- name: "Create gnupg dir"
+  file: path="~/.gnupg"
+  tags:
+    - workstation
+    - workstation:user
+  become: no
+- name: "Setup gpg public keys"
+  copy: src={{ data_external }}/gpg/pubring.gpg dest=~/.gnupg/pubring.gpg mode=0600
+  tags:
+    - workstation
+    - workstation:user
+  become: no
+- name: "Setup gpg private keys"
+  copy: src={{ data_external}}/gpg/secring.gpg dest=~/.gnupg/secring.gpg mode=0600
+  tags:
+    - workstation
+    - workstation:user
+  become: no
+- name: import ownertrust
+  command: gpg --import-ownertrust {{ data_external }}/gpg/markus-ownertrust.gpg.txt creates=~/.gnupg/trustdb.gpg
+  tags:
+    - workstation
+    - workstation:user
+  become: no
+
+- name: create default ini file
+  copy: src=data/.machine.conf dest=/home/{{ ansible_env.USER }}/.machine.conf force=no
+  tags:
+    - workstation
+    - workstation:user
+  become: no

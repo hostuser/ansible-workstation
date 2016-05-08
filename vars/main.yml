@@ -1,5 +1,7 @@
 ---
 # vars file for makkus.workstation
+data_external: /home/markus/src/system/roles/workstation/files/data-external
+
 cli_only: "{{ lookup('ini', 'cli_only type=properties file=/home/{{ ansible_env.USER }}/.machine.conf default=true') | bool }}"
 
 nix_packages:
@@ -76,3 +78,23 @@ pip3_packages:
 
 pip3_x_packages:
       - i3barfodder
+
+stow_packages:
+      - bash
+      - beets
+      - flake8
+      - git
+      - nix
+      - percol
+      - spacemacs
+      - systemd
+      - zile
+      - zsh
+
+stow_x_packages:
+      - dunst
+      - fonts
+      - i3
+      - redshift
+      - rofi-pass
+      - Xresources

@@ -1,0 +1,27 @@
+- name: "Copy custom Xsession file for LightDM"
+  become: yes
+  copy: src=data/Markus.desktop dest=/usr/share/xsessions/Markus.desktop mode=755
+  tags:
+    - workstation
+    - workstation:misc
+
+- name: "Get username"
+  shell: whoami
+  register: username
+  tags:
+    - workstation
+    - workstation:misc
+
+- name: "Add zsh to shells"
+  become: yes
+  lineinfile: dest=/etc/shells line="/home/{{ username.stdout }}/.nix-profile/bin/zsh"
+  tags:
+    - workstation
+    - workstation:misc
+
+- name: "Set default shell to zsh"
+  become: yes
+  shell: usermod -s "/home/{{ username.stdout }}/.nix-profile/bin/zsh" {{ username.stdout }}
+  tags:
+    - workstation
+    - workstation:misc
