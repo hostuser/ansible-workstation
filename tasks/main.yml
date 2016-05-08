@@ -1,0 +1,90 @@
+---
+# tasks file for makkus.workstation
+- name: create default ini file
+  copy: src=data/.machine.conf dest=/home/{{ ansible_env.USER }}/.machine.conf force=no
+
+- name: nix-config file to allow unfree packages
+  copy: src=data/config.nix dest=/home/{{ ansible_env.USER }}/.nixpkgs/config.nix force=no
+
+- name: install nix dependencies
+  apt: pkg={{item}} state=installed
+  with_items:
+    - wget
+    - bzip2
+    - ca-certificates
+  become: yes
+
+- name: Install nix
+  command: data/install_nix.sh creates=/home/{{ ansible_env.USER }}/.nix-profile/bin/nix-env
+  become: no
+
+- name: Install external nix packages
+  command: "{{ role_path }}/files/data/nix_external_packages.sh"
+  become: no
+
+- name: install nix packages
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.nix-profile/bin:{{ ansible_env.PATH }}"
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  nix: name={{ item }} state=present
+  with_items:
+    - "{{ nix_packages }}"
+  become: no
+
+- name: install nix x packages
+  environment:
+    PATH: "{{ ansible_env.HOME }}/.nix-profile/bin:{{ ansible_env.PATH }}"
+    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
+  nix: name={{ item }} state=present
+  with_items:
+    - "{{ nix_x_packages }}"
+  become: no
+  when: not cli_only
+
+- name: install python dependencies
+  apt: pkg={{item}} state=installed
+  with_items:
+    - python-setuptools
+    - python3-setuptools
+    - python-dev
+    - python3-dev
+    - virtualenvwrapper
+  become: yes
+
+- name: install pip
+  command: easy_install pip creates=/usr/local/bin/pip
+  become: yes
+
+- name: install pip3
+  command: easy_install3 pip creates=/usr/local/bin/pip3
+  become: yes
+
+- name: install pip packages
+  pip: name={{ item }} state=latest
+       executable=pip2
+  with_items:
+    - "{{ pip2_packages }}"
+  become: yes
+
+- name: install pip x packages
+  pip: name={{ item }} state=latest
+       executable=pip2
+  with_items:
+    - "{{ pip2_x_packages }}"
+  become: yes
+  when: not cli_only
+
+- name: install pip3 packages
+  pip: name={{ item }} state=latest
+       executable=pip3
+  with_items:
+    - "{{ pip3_packages }}"
+  become: yes
+
+- name: install pip3 x packages
+  pip: name={{ item }} state=latest
+       executable=pip3
+  with_items:
+    - "{{ pip3_x_packages }}"
+  become: yes
+  when: not cli_only

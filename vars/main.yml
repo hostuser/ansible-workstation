@@ -1,0 +1,78 @@
+---
+# vars file for makkus.workstation
+cli_only: "{{ lookup('ini', 'cli_only type=properties file=/home/{{ ansible_env.USER }}/.machine.conf default=true') | bool }}"
+
+nix_packages:
+      - atool
+      - chromaprint
+      - di
+      - emacs
+      - git
+      - git-crypt
+      - gnupg
+      - htop
+      - imapfilter
+      - isync
+      - mu
+      - nox
+      - oraclejdk
+      - pandoc
+      - password-store
+      - redshift
+      - silver-searcher
+      - stow
+      - tree
+      - unrar
+      - whois
+      - zile
+      - zsh
+
+nix_x_packages:
+      - autocutsel
+      - chromium
+      - compton
+      - dunst
+      - firefox
+      - gimp
+      - i3
+      - i3lock
+      - idea-ultimate
+      - keepass
+      - lxappearance-0.6.1
+      - meld
+      - python2.7-udiskie
+      - rofi
+      - rofi-pass
+      - rxvt-unicode
+      - seafile-client
+      - shotwell
+      - unetbootin
+      - vlc
+      - xauth
+      - xclip
+      - xdotool
+      - xsel
+      - zathura
+
+pip2_packages:
+      # - ansible
+      - autoenv
+      - beets
+      - cookiecutter
+      - discogs-client
+      - docker-compose
+      - percol
+      - pip
+      - pyacoustid
+      - pylast
+      - thefuck
+      - virtualenv
+      - virtualenv-clone
+      - virtualenvwrapper
+
+pip2_x_packages:
+
+pip3_packages:
+
+pip3_x_packages:
+      - i3barfodder
