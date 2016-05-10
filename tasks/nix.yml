@@ -1,11 +1,18 @@
 ---
 # tasks file for makkus.workstation
+- name: create nixpkgs dir
+  file: path=/home/{{ ansible_env.USER }}/.nixpkgs
+  tags:
+    - workstation
+    - workstation:nix
+  become: no
 
 - name: nix-config file to allow unfree packages
   copy: src=data/config.nix dest=/home/{{ ansible_env.USER }}/.nixpkgs/config.nix force=no
   tags:
     - workstation
     - workstation:nix
+  become: no
 
 
 - name: install nix dependencies
@@ -20,7 +27,10 @@
     - workstation:nix
 
 - name: Install nix
-  command: data/install_nix.sh creates=/home/{{ ansible_env.USER }}/.nix-profile/bin/nix-env
+  command: "{{ role_path }}/files/data/install_nix.sh"
+  args:
+    creates: "/home/{{ ansible_env.USER }}/.nix-profile/bin/nix-env"
+
   become: no
   tags:
     - workstation

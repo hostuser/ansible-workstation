@@ -67,6 +67,7 @@ pip2_packages:
       - pip
       - pyacoustid
       - pylast
+      - scrot
       - thefuck
       - virtualenv
       - virtualenv-clone
