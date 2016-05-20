@@ -1,0 +1,7 @@
+---
+- name: nix-config file to allow unfree packages
+  copy: src=data/.machine.conf dest=/home/{{ ansible_env.USER }}/.machine.conf force=no
+  tags:
+    - workstation
+    - workstation:nix
+  become: no
