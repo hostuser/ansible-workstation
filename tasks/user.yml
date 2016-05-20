@@ -6,25 +6,37 @@
   tags:
     - workstation
     - workstation:user
+    - workstation:ssy_key
   become: no
+
+- name: "Upload ssh key to github"
+  shell: curl -u "makkus:{{ github_password }}" --data "{\"title\":\"$(hostname)\", \"key\":\"$(cat /home/markus/.ssh/id_rsa.pub)\"}" https://api.github.com/user/keys
+  tags:
+    - workstation
+    - workstation:user
+    - workstation:github
+
 - name: "Create gnupg dir"
   file: path="~/.gnupg"
   tags:
     - workstation
     - workstation:user
   become: no
+
 - name: "Setup gpg public keys"
-  copy: src={{ data_external }}/gpg/pubring.gpg dest=~/.gnupg/pubring.gpg mode=0600
+  copy: src={{ data_external }}/gpg/pubring.gpg dest=~/.gnupg/pubring.gpg mode=0600 force=no
   tags:
     - workstation
     - workstation:user
   become: no
+
 - name: "Setup gpg private keys"
-  copy: src={{ data_external}}/gpg/secring.gpg dest=~/.gnupg/secring.gpg mode=0600
+  copy: src={{ data_external}}/gpg/secring.gpg dest=~/.gnupg/secring.gpg mode=0600 force=no
   tags:
     - workstation
     - workstation:user
   become: no
+
 - name: import ownertrust
   command: gpg --import-ownertrust {{ data_external }}/gpg/markus-ownertrust.gpg.txt creates=~/.gnupg/trustdb.gpg
   tags:
@@ -32,9 +44,3 @@
     - workstation:user
   become: no
 
-- name: create default ini file
-  copy: src=data/.machine.conf dest=/home/{{ ansible_env.USER }}/.machine.conf force=no
-  tags:
-    - workstation
-    - workstation:user
-  become: no

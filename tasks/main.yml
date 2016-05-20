@@ -1,3 +1,4 @@
+- include: init.yml
 - include: nix.yml
 - include: pip.yml
 - include: user.yml

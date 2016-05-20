@@ -1,7 +1,7 @@
 ---
 # tasks file for makkus.workstation
 - name: create nixpkgs dir
-  file: path=/home/{{ ansible_env.USER }}/.nixpkgs
+  file: path=/home/{{ ansible_env.USER }}/.nixpkgs state=directory 
   tags:
     - workstation
     - workstation:nix
@@ -37,7 +37,7 @@
     - workstation:nix
 
 - name: Install external nix packages
-  command: "{{ role_path }}/files/data/nix_external_packages.sh {{ data_external }}"
+  command: "{{ role_path }}/files/data/nix_external_packages.sh {{ data_external }}/nix-external"
   become: no
   tags:
     - workstation

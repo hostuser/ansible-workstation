@@ -7,6 +7,7 @@
   tags:
     - workstation
     - workstation:config
+
 - name: "Unlock encrypted dotfiles"
   shell: . ~/.nix-profile/etc/profile.d/nix.sh && ~/.nix-profile/bin/git-crypt unlock
          chdir=~/dotfiles
@@ -34,7 +35,7 @@
     - workstation:config
 
 - name: "Remove potential setup configs"
-  shell: rm -rf ~/.bash_profile ~/.bashrc ~/.profile ~/.nix-pkgs
+  shell: rm -rf ~/.bash_profile ~/.bashrc ~/.profile ~/.nixpkgs
   become: no
   tags:
     - workstation

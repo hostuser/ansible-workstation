@@ -1,6 +1,6 @@
 ---
 # vars file for makkus.workstation
-data_external: /home/markus/src/system/roles/workstation/files/data-external
+data_external: "{{ lookup('ini', 'data_external type=properties file=/home/{{ ansible_env.USER }}/.machine.conf default=data-external') }}"
 
 cli_only: "{{ lookup('ini', 'cli_only type=properties file=/home/{{ ansible_env.USER }}/.machine.conf default=true') | bool }}"
 
@@ -17,10 +17,10 @@ nix_packages:
       - isync
       - mu
       - nox
-      - oraclejdk
       - pandoc
       - password-store
       - redshift
+      - scrot
       - silver-searcher
       - stow
       - tree
@@ -37,8 +37,8 @@ nix_x_packages:
       - firefox
       - gimp
       - i3
+      - i3barfodder
       - i3lock
-      - idea-ultimate
       - keepass
       - lxappearance-0.6.1
       - meld
@@ -56,6 +56,10 @@ nix_x_packages:
       - xsel
       - zathura
 
+nix_packages_external:
+      - oraclejdk
+      - idea-ultimate
+
 pip2_packages:
       # - ansible
       - autoenv
@@ -67,7 +71,6 @@ pip2_packages:
       - pip
       - pyacoustid
       - pylast
-      - scrot
       - thefuck
       - virtualenv
       - virtualenv-clone
