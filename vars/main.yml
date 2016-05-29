@@ -37,7 +37,6 @@ nix_x_packages:
       - firefox
       - gimp
       - i3
-      - i3barfodder
       - i3lock
       - keepass
       - lxappearance-0.6.1
